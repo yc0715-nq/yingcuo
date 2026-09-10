@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习 · 大模型的上下文（Context）</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2329; --sub:#5b6168;
+    --line:#e6e8eb; --accent:#2f6fed; --accent-soft:#eaf1ff;
+    --warn:#b76e00; --warn-soft:#fff5e6; --ok:#1a7f4b; --ok-soft:#e9f7ef;
+    --code-bg:#f3f4f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.75;font-size:16px}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  header.cap{background:linear-gradient(135deg,#7a3ff2,#9b6bff);color:#fff;
+    border-radius:16px;padding:28px 26px;margin-bottom:24px}
+  header.cap .tag{display:inline-block;background:rgba(255,255,255,.18);
+    border-radius:999px;padding:3px 12px;font-size:13px;margin-bottom:10px}
+  header.cap h1{margin:6px 0 4px;font-size:26px}
+  header.cap p{margin:0;opacity:.92;font-size:14px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:18px}
+  h2{font-size:19px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  h2 .n{background:var(--accent);color:#fff;width:26px;height:26px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
+  .def{background:var(--accent-soft);border-left:4px solid var(--accent);
+    padding:12px 16px;border-radius:8px;font-size:17px;font-weight:600}
+  .muted{color:var(--sub)}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:4px 0}
+  .analogy{background:var(--warn-soft);border-left:4px solid var(--warn);
+    padding:12px 16px;border-radius:8px}
+  pre{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;overflow:auto;font-size:13.5px;line-height:1.6}
+  code{font-family:"SFMono-Regular",Consolas,"Courier New",monospace}
+  .steps{counter-reset:s;list-style:none;padding-left:0}
+  .steps li{counter-increment:s;position:relative;padding-left:38px;margin:10px 0}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;
+    background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;
+    background:#fcfcfd}
+  summary{cursor:pointer;font-weight:600;color:var(--accent)}
+  .q{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
+  .q b{color:var(--ink)}
+  .ans{color:var(--ok);margin-top:6px;font-size:14.5px}
+  footer{color:var(--sub);font-size:13px;text-align:center;margin-top:28px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cap">
+    <span class="tag">大数据与人工智能 · 概念学习资料</span>
+    <h1>大模型的上下文（Context）</h1>
+    <p>概念英文：Context Window / Prompt Context ｜ 适用场景：提示词工程、长文档问答、RAG</p>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span>一句话定义</h2>
+    <div class="def">上下文就是大模型在生成回答时，眼前能看到的全部文字，长度有限（这个上限叫"上下文窗口"）。</div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>核心直觉 / 为什么需要它</h2>
+    <ul>
+      <li><b>没有它之前：</b>模型每次只能"看一句话"，回答完就忘了前文，做不到多轮对话，也读不了长资料。</li>
+      <li><b>它解决的根本问题：</b>把系统提示、对话历史、参考资料、工具返回全部"摆"在模型面前，让它基于完整信息做判断。</li>
+      <li><b>核心思想（一句话）：</b>有限的"工作台面"——东西太多就放不下，必须学会取舍与压缩（截断 / 摘要 / 检索）。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>生活化类比</h2>
+    <div class="analogy">
+      <p>像你的<b>办公桌桌面</b>：桌面就那么大，能同时摊开的文件有限。要处理新文件，就得把旧的归档或清走；重要的钉在"便签"（系统提示）上永远留着。</p>
+      <p class="muted">对应关系：桌面大小 = 上下文窗口（token 数）；摊开的文件 = 当前拼进提示的词；清走旧文件 = 滑动窗口/截断；去档案柜取 = 检索增强（RAG）。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>工作机制（逐步拆解）</h2>
+    <ol class="steps">
+      <li><b>放系统提示</b>：最前面放 System Prompt（角色、规则），始终占着"桌面"。</li>
+      <li><b>拼装内容</b>：按"系统 → 历史对话 → 参考资料 → 工具返回"的顺序拼接文本。</li>
+      <li><b>调用工具</b>：工具返回的结果也写回上下文，成为后续思考的一部分。</li>
+      <li><b>超限处理</b>：总长度超过窗口时，截断早期内容、做摘要，或用检索只取相关片段。</li>
+      <li><b>生成</b>：模型基于"整个窗口"逐词（token）预测下一个输出。</li>
+      <li><b>滚动</b>：多轮对话中，旧内容被挤出窗口，保证最新上下文始终在限内。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>代码示例（Python 3.12，可直接运行）</h2>
+    <pre><code># context_window.py —— 管理"上下文窗口"长度，超长就截断
+def truncate_to_budget(text: str, max_tokens: int,
+                       chars_per_token: float = 4.0) -> str:
+    # 用"字符数/4"粗略估算 token 数（中文约 1~2 字/token，这里取近似）
+    budget_chars = int(max_tokens * chars_per_token)
+    if len(text) <= budget_chars:
+        return text
+    keep = text[:budget_chars]
+    return keep + "\n…[已截断，超出上下文窗口]"
+
+ctx = "系统：你是课程助教。\n" + ("用户：请解释 Transformer 的原理。\n" * 500)
+print(f"原始长度 {len(ctx)} 字符")
+safe = truncate_to_budget(ctx, max_tokens=2000)
+print(f"裁剪后 {len(safe)} 字符，可安全塞进上下文窗口")</code></pre>
+    <p class="muted">运行后能看到"超长文本被裁剪到预算内"。真实系统还会配合 embeddings 检索，只把相关片段放进窗口。</p>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>自测练习（3 题）</h2>
+
+    <div class="q">
+      <b>Q1 概念复述：</b>请用一句话说明"上下文窗口"是什么，以及为什么它很重要。
+      <details><summary>参考答案</summary>
+      <div class="ans">上下文窗口是模型一次能"看到"的最大文本量（token 上限）；它决定了模型能记住多少历史、能读多长的资料，是长对话和长文档处理的天花板。</div></details>
+    </div>
+
+    <div class="q">
+      <b>Q2 机制辨析：</b>判断正误：把 10 万字的书全文塞进提示词，模型就一定能准确回答关于这本书的任何问题。
+      <details><summary>参考答案</summary>
+      <div class="ans">错误。受上下文窗口限制，全文往往放不下；硬塞会截断或超出限制。正确做法是检索（RAG）只取相关段落，而非全文塞入。</div></details>
+    </div>
+
+    <div class="q">
+      <b>Q3 应用迁移：</b>多轮聊天里，最早的一条消息被"挤出"窗口后，模型是不是就彻底忘了它？有什么办法缓解？
+      <details><summary>参考答案</summary>
+      <div class="ans">模型当下确实"看不到了"，但可用两类办法缓解：①把关键信息周期性摘要后写回系统提示；②把历史存入外部记忆（数据库/向量库），需要时检索注入。即"忘在眼前，记在别处"。</div></details>
+    </div>
+  </section>
+
+  <footer>本资料由概念学习资料生成 Skill 辅助生成 · 提交前请人工核查准确性</footer>
+</div>
+</body>
+</html>

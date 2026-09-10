@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习 · Skill（技能）</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2329; --sub:#5b6168;
+    --line:#e6e8eb; --accent:#2f6fed; --accent-soft:#eaf1ff;
+    --warn:#b76e00; --warn-soft:#fff5e6; --ok:#1a7f4b; --ok-soft:#e9f7ef;
+    --code-bg:#f3f4f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.75;font-size:16px}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  header.cap{background:linear-gradient(135deg,#0f9d8a,#36c2a8);color:#fff;
+    border-radius:16px;padding:28px 26px;margin-bottom:24px}
+  header.cap .tag{display:inline-block;background:rgba(255,255,255,.18);
+    border-radius:999px;padding:3px 12px;font-size:13px;margin-bottom:10px}
+  header.cap h1{margin:6px 0 4px;font-size:26px}
+  header.cap p{margin:0;opacity:.92;font-size:14px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:18px}
+  h2{font-size:19px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  h2 .n{background:var(--accent);color:#fff;width:26px;height:26px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
+  .def{background:var(--accent-soft);border-left:4px solid var(--accent);
+    padding:12px 16px;border-radius:8px;font-size:17px;font-weight:600}
+  .muted{color:var(--sub)}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:4px 0}
+  .analogy{background:var(--warn-soft);border-left:4px solid var(--warn);
+    padding:12px 16px;border-radius:8px}
+  pre{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;overflow:auto;font-size:13.5px;line-height:1.6}
+  code{font-family:"SFMono-Regular",Consolas,"Courier New",monospace}
+  .steps{counter-reset:s;list-style:none;padding-left:0}
+  .steps li{counter-increment:s;position:relative;padding-left:38px;margin:10px 0}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;
+    background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;
+    background:#fcfcfd}
+  summary{cursor:pointer;font-weight:600;color:var(--accent)}
+  .q{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
+  .q b{color:var(--ink)}
+  .ans{color:var(--ok);margin-top:6px;font-size:14.5px}
+  footer{color:var(--sub);font-size:13px;text-align:center;margin-top:28px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cap">
+    <span class="tag">大数据与人工智能 · 概念学习资料</span>
+    <h1>Skill（技能）</h1>
+    <p>概念英文：Skill / Capability ｜ 适用场景：AI Agent 能力封装、可复用工作流</p>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span>一句话定义</h2>
+    <div class="def">Skill 是一份写给 AI 的"标准作业流程（SOP）"，让它在特定场景下稳定地做出正确行为。</div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>核心直觉 / 为什么需要它</h2>
+    <ul>
+      <li><b>没有它之前：</b>每次遇到同类任务都要重新解释"怎么做"，结果时好时坏，全看提示词运气。</li>
+      <li><b>它解决的根本问题：</b>把专家经验固化成可复用的指令与步骤，谁（哪个 Agent）来跑都能得到稳定的高质量结果。</li>
+      <li><b>核心思想（一句话）：</b>把"怎么做"从人脑搬到文件里，随用随取、可批量复制。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>生活化类比</h2>
+    <div class="analogy">
+      <p>像餐厅的<b>菜谱</b>：按菜谱的步骤做，不管是谁下厨，都能做出味道差不多的菜。Skill 就是 AI 的"菜谱"——定义了在什么情况下、按什么顺序、调用什么工具完成一道"菜"（任务）。</p>
+      <p class="muted">对应关系：菜谱 = Skill 文件；厨师 = Agent；按步骤炒菜 = 按 SOP 执行；不同菜谱 = 不同 Skill 库。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>工作机制（逐步拆解）</h2>
+    <ol class="steps">
+      <li><b>触发</b>：根据关键词或场景，判断该用哪个 Skill（如"生成学习资料"）。</li>
+      <li><b>加载</b>：读取该 Skill 的说明、约束与推荐步骤。</li>
+      <li><b>执行</b>：按步骤行动，过程中可调用工具或写文件。</li>
+      <li><b>产出</b>：生成结构化结果（如一份 HTML 学习资料）。</li>
+      <li><b>复用</b>：同一份 Skill 可被任意 Agent 多次、跨任务调用，形成"能力积木"。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>代码示例（Python 3.12，可直接运行）</h2>
+    <pre><code># skill_registry.py —— 注册并调度多个 Skill（像一面菜谱架）
+skills: dict[str, callable] = {}
+
+def skill(name: str):                  # 装饰器：把函数登记为一个 Skill
+    def wrap(fn: callable) -> callable:
+        skills[name] = fn
+        return fn
+    return wrap
+
+@skill("解释概念")
+def explain(concept: str) -> str:
+    return f"用生活类比解释『{concept}』"
+
+@skill("写代码")
+def code(task: str) -> str:
+    return f"为『{task}』生成最小可运行示例"
+
+def dispatch(name: str, *args):
+    if name not in skills:
+        return "⚠️ 没有这个 Skill"
+    return skills[name](*args)        # 按名调用对应 SOP
+
+print(dispatch("解释概念", "注意力机制"))
+print(dispatch("写代码", "快速排序"))</code></pre>
+    <p class="muted">运行后能看到：用名字就能"点菜"调用对应能力。把函数体换成真正逻辑，就是生产级 Skill 调度器。</p>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>自测练习（3 题）</h2>
+
+    <div class="q">
+      <b>Q1 概念复述：</b>Skill 和"一段普通代码"有什么不同？为什么 Agent 需要 Skill 而不是直接写死逻辑？
+      <details><summary>参考答案</summary>
+      <div class="ans">Skill 是"带场景说明与步骤的能力封装"，可被按需触发、跨任务复用；写死逻辑则耦合在某处。Skill 让 Agent 像"翻菜谱"一样灵活组合能力，而不必把所有步骤硬编码。</div></details>
+    </div>
+
+    <div class="q">
+      <b>Q2 机制辨析：</b>判断正误：一个 Skill 只能被一个 Agent 使用，不能共享。
+      <details><summary>参考答案</summary>
+      <div class="ans">错误。Skill 是"能力积木"，设计为可复用；同一份 Skill 可被多个 Agent、多次任务调用，这正是它存在的价值。</div></details>
+    </div>
+
+    <div class="q">
+      <b>Q3 应用迁移：</b>如果让你为"自动写周报"设计一个 Skill，它的步骤（SOP）会包含哪几步？
+      <details><summary>参考答案</summary>
+      <div class="ans">示例：①收集本周 git 提交/文档改动；②按"做了什么/进展/风险"归类；③套用周报模板生成草稿；④交人审阅。把这套步骤固化成 Skill，每周一键复用。</div></details>
+    </div>
+  </section>
+
+  <footer>本资料由概念学习资料生成 Skill 辅助生成 · 提交前请人工核查准确性</footer>
+</div>
+</body>
+</html>

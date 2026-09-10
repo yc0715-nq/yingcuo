@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习 · AI Agent（智能体）</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2329; --sub:#5b6168;
+    --line:#e6e8eb; --accent:#2f6fed; --accent-soft:#eaf1ff;
+    --warn:#b76e00; --warn-soft:#fff5e6; --ok:#1a7f4b; --ok-soft:#e9f7ef;
+    --code-bg:#f3f4f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.75;font-size:16px}
+  .wrap{max-width:840px;margin:0 auto;padding:32px 20px 64px}
+  header.cap{background:linear-gradient(135deg,#2f6fed,#5b8def);color:#fff;
+    border-radius:16px;padding:28px 26px;margin-bottom:24px}
+  header.cap .tag{display:inline-block;background:rgba(255,255,255,.18);
+    border-radius:999px;padding:3px 12px;font-size:13px;margin-bottom:10px}
+  header.cap h1{margin:6px 0 4px;font-size:26px}
+  header.cap p{margin:0;opacity:.92;font-size:14px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:18px}
+  h2{font-size:19px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  h2 .n{background:var(--accent);color:#fff;width:26px;height:26px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
+  .def{background:var(--accent-soft);border-left:4px solid var(--accent);
+    padding:12px 16px;border-radius:8px;font-size:17px;font-weight:600}
+  .muted{color:var(--sub)}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:4px 0}
+  .analogy{background:var(--warn-soft);border-left:4px solid var(--warn);
+    padding:12px 16px;border-radius:8px}
+  pre{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;overflow:auto;font-size:13.5px;line-height:1.6}
+  code{font-family:"SFMono-Regular",Consolas,"Courier New",monospace}
+  .steps{counter-reset:s;list-style:none;padding-left:0}
+  .steps li{counter-increment:s;position:relative;padding-left:38px;margin:10px 0}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;
+    background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;
+    background:#fcfcfd}
+  summary{cursor:pointer;font-weight:600;color:var(--accent)}
+  .q{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
+  .q b{color:var(--ink)}
+  .ans{color:var(--ok);margin-top:6px;font-size:14.5px}
+  footer{color:var(--sub);font-size:13px;text-align:center;margin-top:28px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cap">
+    <span class="tag">大数据与人工智能 · 概念学习资料</span>
+    <h1>AI Agent（智能体）</h1>
+    <p>概念英文：AI Agent / Intelligent Agent ｜ 适用场景：大模型应用、自动化任务</p>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span>一句话定义</h2>
+    <div class="def">AI Agent 是一个能自己"想办法"、调用工具、一步步把目标做完成的智能程序。</div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>核心直觉 / 为什么需要它</h2>
+    <ul>
+      <li><b>没有它之前：</b>你每次都要手把手给大模型写提示词、把结果复制出来、再决定下一步做什么——人是"循环驱动器"。</li>
+      <li><b>它解决的根本问题：</b>把"思考 → 行动 → 观察"的循环交给程序自动跑，让大模型从一个"问答机"变成能完成多步任务的"执行者"。</li>
+      <li><b>核心思想（一句话）：</b>感知—思考—行动—观察的闭环（即 <b>ReAct</b> 范式：Reasoning + Acting）。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>生活化类比</h2>
+    <div class="analogy">
+      <p>像一位<b>私人助理</b>：你只说一句"帮我订明天去北京的机票"。他会自己<b>查天气</b>（调用工具）、<b>比价</b>（再调用工具）、<b>下单</b>（行动），每一步看到结果后再决定下一步，直到目标达成。</p>
+      <p class="muted">对应关系：你说的话 = 目标；助理的脑子 = 大模型的"思考"；查天气/比价 = 调用工具（Tool）；他看到的返回结果 = 观察（Observation）。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>工作机制（逐步拆解）</h2>
+    <ol class="steps">
+      <li><b>接收目标</b>：用户给出一句话任务（如"查北京天气并判断要不要带伞"）。</li>
+      <li><b>思考（Think）</b>：大模型基于当前情况，决定"下一步该做什么动作"。</li>
+      <li><b>行动（Act）</b>：执行该动作——通常是调用一个外部工具（搜索、计算、读文件、调 API）。</li>
+      <li><b>观察（Observe）</b>：把工具返回的结果写回，作为下一步思考的依据。</li>
+      <li><b>判断终止</b>：若已能回答目标，则输出最终结果；否则回到第 2 步继续循环。</li>
+      <li><b>收尾</b>：把整个过程的结论整理成最终答复返回给用户。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>代码示例（Python 3.12，可直接运行）</h2>
+    <pre><code># toy_agent.py —— 最小可运行的 Agent 循环（无需联网）
+def fake_llm(thought: str, tools: list[str]) -> tuple[str, str | None]:
+    # 真实 Agent 这里会调用大模型 API；此处用规则假装"思考"
+    if "天气" in thought:
+        return "我需要先查天气", "get_weather"
+    return "目标已完成，可以答复", None
+
+def get_weather() -> str:
+    return "北京 晴 26°C"          # 假装查到了天气
+
+tools = {"get_weather": get_weather}
+
+def run_agent(goal: str, max_steps: int = 5):
+    context = f"目标：{goal}\n"
+    for step in range(1, max_steps + 1):
+        thought, action = fake_llm(context, list(tools))
+        print(f"第{step}步 思考：{thought}")
+        if action is None:
+            print("✅ 完成"); break
+        obs = tools[action]()       # 这句在演示"调用工具"
+        context += f"→ 工具{action}返回：{obs}\n"
+        print(f"  执行 {action} → 观察到：{obs}")
+
+run_agent("明天去北京要带伞吗？")</code></pre>
+    <p class="muted">运行后会看到"思考 → 执行工具 → 观察"的循环；把 <code>fake_llm</code> 换成真正的大模型接口，就成了一个真实 Agent。</p>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>自测练习（3 题）</h2>
+
+    <div class="q">
+      <b>Q1 概念复述：</b>请用你自己的话（不超过 30 字）说明"AI Agent 和普通聊天机器人最大的区别是什么？"
+      <details><summary>参考答案</summary>
+      <div class="ans">普通聊天机器人只"答"，Agent 会"做"——能自主调用工具、多步推进直到完成任务。</div></details>
+    </div>
+
+    <div class="q">
+      <b>Q2 机制辨析：</b>判断正误：Agent 每执行一次工具调用后，都会把结果丢弃，只保留最初的对话。
+      <details><summary>参考答案</summary>
+      <div class="ans">错误。Agent 会把工具返回（Observation）写回上下文，作为下一步思考的依据；否则无法多步推进。</div></details>
+    </div>
+
+    <div class="q">
+      <b>Q3 应用迁移：</b>如果让你用 Agent 思路做一个"自动整理下载文件夹"的小工具，它会调用哪些"工具"？循环怎么走？
+      <details><summary>参考答案</summary>
+      <div class="ans">工具：列文件、读文件类型/修改时间、移动文件。循环：扫描目录→判断类别→移动→观察结果→是否还有未处理文件→直到清空。本质就是把"人手动归类"自动化成 Think-Act-Observe 循环。</div></details>
+    </div>
+  </section>
+
+  <footer>本资料由概念学习资料生成 Skill 辅助生成 · 提交前请人工核查准确性</footer>
+</div>
+</body>
+</html>

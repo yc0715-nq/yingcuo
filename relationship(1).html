@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习 · Agent、上下文与 Skill 的关系</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2329; --sub:#5b6168;
+    --line:#e6e8eb; --accent:#2f6fed; --accent-soft:#eaf1ff;
+    --warn:#b76e00; --warn-soft:#fff5e6; --ok:#1a7f4b; --ok-soft:#e9f7ef;
+    --code-bg:#f3f4f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.75;font-size:16px}
+  .wrap{max-width:860px;margin:0 auto;padding:32px 20px 64px}
+  header.cap{background:linear-gradient(135deg,#d6336c,#f06595);color:#fff;
+    border-radius:16px;padding:28px 26px;margin-bottom:24px}
+  header.cap .tag{display:inline-block;background:rgba(255,255,255,.18);
+    border-radius:999px;padding:3px 12px;font-size:13px;margin-bottom:10px}
+  header.cap h1{margin:6px 0 4px;font-size:26px}
+  header.cap p{margin:0;opacity:.92;font-size:14px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:18px}
+  h2{font-size:19px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+  h2 .n{background:var(--accent);color:#fff;width:26px;height:26px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
+  .def{background:var(--accent-soft);border-left:4px solid var(--accent);
+    padding:12px 16px;border-radius:8px;font-size:17px;font-weight:600}
+  .muted{color:var(--sub)}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:4px 0}
+  .analogy{background:var(--warn-soft);border-left:4px solid var(--warn);
+    padding:12px 16px;border-radius:8px}
+  .triad{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+  .triad .box{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;
+    padding:14px;text-align:center;background:#fcfcfd}
+  .triad .box .emoji{font-size:26px}
+  .triad .box .role{font-weight:700;margin:6px 0 2px}
+  .triad .box .desc{font-size:13.5px;color:var(--sub)}
+  pre{background:var(--code-bg);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;overflow:auto;font-size:13.5px;line-height:1.6}
+  code{font-family:"SFMono-Regular",Consolas,"Courier New",monospace}
+  .steps{counter-reset:s;list-style:none;padding-left:0}
+  .steps li{counter-increment:s;position:relative;padding-left:38px;margin:10px 0}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;
+    background:var(--accent);color:#fff;width:24px;height:24px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0;
+    background:#fcfcfd}
+  summary{cursor:pointer;font-weight:600;color:var(--accent)}
+  .q{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
+  .q b{color:var(--ink)}
+  .ans{color:var(--ok);margin-top:6px;font-size:14.5px}
+  footer{color:var(--sub);font-size:13px;text-align:center;margin-top:28px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="cap">
+    <span class="tag">大数据与人工智能 · 概念学习资料（综合）</span>
+    <h1>Agent、上下文与 Skill 三者之间的关系</h1>
+    <p>把三个概念放到一起看：谁在干活、靠什么信息、按什么规范</p>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span>一句话定义</h2>
+    <div class="def">Agent 是"干活的人"，上下文是"他眼前的资料桌"，Skill 是"他手边的标准作业手册"——三者配合，才能稳定地把任务做完。</div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>核心直觉 / 为什么需要它</h2>
+    <ul>
+      <li><b>没有协作会怎样：</b>只有 Agent 没上下文 → 它瞎猜、记不住前文；只有 Agent 没 Skill → 它乱做、质量不稳定；三者缺一，任务都做不好。</li>
+      <li><b>它解决的根本问题：</b>用"上下文"提供记忆与信息，"Skill"提供规范与能力，"Agent"负责调度与决策，三者构成可复用的智能系统。</li>
+      <li><b>核心思想（一句话）：</b>上下文是"共享黑板"，Skill 是"能力插件"，Agent 是"调度中枢"。</li>
+    </ul>
+    <div class="triad">
+      <div class="box"><div class="emoji">🤖</div><div class="role">Agent</div><div class="desc">调度中枢：思考、决策、驱动循环</div></div>
+      <div class="box"><div class="emoji">📋</div><div class="role">上下文</div><div class="desc">共享黑板：目标、历史、工具返回</div></div>
+      <div class="box"><div class="emoji">📒</div><div class="role">Skill</div><div class="desc">能力插件：可复用的标准作业 SOP</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>生活化类比</h2>
+    <div class="analogy">
+      <p>像一个<b>项目小组</b>：<b>组长（Agent）</b>盯着<b>共享白板（上下文）</b>上的目标与进度，遇到不会的环节就翻<b>岗位手册（Skill）</b>按步骤做，把产出又写回白板；白板写不下时就归档旧内容。三者配合，小组才能交付。</p>
+      <p class="muted">对应关系：组长=Agent；白板=上下文窗口；岗位手册=Skill；写回白板=Observation 回写上下文；归档=截断/摘要/RAG。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>工作机制（逐步拆解）</h2>
+    <ol class="steps">
+      <li><b>初始化</b>：Agent 启动，在上下文中写入"目标 + 约束"。</li>
+      <li><b>遇子任务</b>：Agent 判断需要某种能力，去 Skill 库里匹配对应 SOP。</li>
+      <li><b>加载 SOP</b>：把 Skill 的步骤与约束读进上下文，作为本次行动的规范。</li>
+      <li><b>执行并写回</b>：按 Skill 执行（可调用工具），过程与结果写入上下文。</li>
+      <li><b>上下文治理</b>：上下文超限时压缩/检索，保证窗口始终在限内。</li>
+      <li><b>循环 / 收尾</b>：回到第 2 步，直到目标达成，输出最终结果。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>代码示例（Python 3.12，可直接运行）</h2>
+    <pre><code># triad.py —— Agent + 上下文 + Skill 三者协作的最小演示
+skills = {"查资料": lambda t: f"找到关于『{t}』的3条要点"}
+
+class Agent:
+    def __init__(self, goal: str):
+        self.context = {"目标": goal, "笔记": []}   # 上下文 = 共享黑板
+
+    def step(self):
+        topic = self.context["目标"]
+        result = skills["查资料"](topic)            # 调用 Skill（能力插件）
+        self.context["笔记"].append(result)        # 写回上下文（Observation）
+        return result
+
+agent = Agent("大模型上下文")
+print("Agent 启动，目标：", agent.context["目标"])
+print("→ 调用 Skill 得到：", agent.step())         # Skill 写入上下文
+print("上下文当前笔记：", agent.context["笔记"])</code></pre>
+    <p class="muted">运行后能看到：Agent 通过 Skill 获取能力，并把结果沉淀进上下文——这正是三者协作的缩影。</p>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>自测练习（3 题）</h2>
+
+    <div class="q">
+      <b>Q1 概念复述：</b>用一句话概括 Agent、上下文、Skill 各自扮演什么角色。
+      <details><summary>参考答案</summary>
+      <div class="ans">Agent = 调度中枢（决定做什么）；上下文 = 共享黑板（记住信息与结果）；Skill = 能力插件（规定怎么做）。三者分别解决"决策、记忆、规范"三个问题。</div></details>
+    </div>
+
+    <div class="q">
+      <b>Q2 机制辨析：</b>判断正误：只要给 Agent 装上足够多的 Skill，就不需要"上下文"了。
+      <details><summary>参考答案</summary>
+      <div class="ans">错误。Skill 只提供"怎么做"的规范，不保存"当前任务状态"。没有上下文，Agent 无法记住目标、历史与工具返回，多步任务仍会断裂。两者互补，缺一不可。</div></details>
+    </div>
+
+    <div class="q">
+      <b>Q3 应用迁移：</b>设想一个"AI 客服"，分别指出它的 Agent、上下文、Skill 各是什么？
+      <details><summary>参考答案</summary>
+      <div class="ans">Agent = 负责理解用户意图、决定回退还是转人工的调度逻辑；上下文 = 本次会话的全部聊天记录与用户订单信息；Skill = "查订单""退换货流程""安抚话术"等标准作业手册。三者配合完成一次服务。</div></details>
+    </div>
+  </section>
+
+  <footer>本资料由概念学习资料生成 Skill 辅助生成 · 提交前请人工核查准确性</footer>
+</div>
+</body>
+</html>
